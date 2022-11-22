@@ -1,177 +1,140 @@
 //Selecting squares from the HTML, in order to manipulate them using the DOM.
-const squares = document.getElementsByClassName('square')
+const squares = Array.from(document.getElementsByClassName('space'))
+const playerOneName = document.getElementById('playerOne');
+const playerTwoName = document.getElementById('playerTwo');
 const msg = document.getElementById('msg')
 
-
 //Game Object
-const myGame = {
-    gameBoard: [],
-    setPlayersName: function(){
-        this.playerOne.name = prompt('Player one name: ')
-        this.playerTwo.name = prompt('Player two name: ')
-    },
+const gameController = {
+    gameBoard: ["", "", "", "", "", "", "", "", ""],
     playerOne: {name: '', value: 'X'},
     playerTwo: {name: '', value: 'O'},
-    winner: false,
-    setWinner: function(){
-        return this.winner = true 
+    setPlayersName: function(){
+        this.playerOne.name = playerOneName.value;
+        this.playerTwo.name = playerTwoName.value;
     },
-    turn: true //create a function to asign this value.
+    currentPlayer: 'X',
+    isGameActive: true,
 }
 
-function selectedSquares() {
-    for(let i = 0; i < squares.length; i++){
-        squares[i].addEventListener('click', () => {
-            if(myGame.winner == true) {
-                return null
-            } else {
-                if(myGame.turn == true){
-                    myGame.gameBoard[i] = myGame.playerOne.value
-                    msg.innerText = `${myGame.playerTwo.name} turn`
-                    render() 
-                    setTurn()
-                    checkStatus();
-                    
-                } else if(myGame.turn == false) {
-                    myGame.gameBoard[i] = myGame.playerTwo.value
-                    msg.innerText = `${myGame.playerOne.name} turn`
-                    render();
-                    setTurn()
-                    checkStatus();
-                } 
-            }
-        }, {once: true}) 
+
+function handleClick(){
+    gameController.playerOne.name = playerOneName.value;
+    gameController.playerTwo.name = playerTwoName.value;
+    msg.innerText = `${gameController.playerOne.name}'s turn`
+    initGame();
+}
+const winningCombinations = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+]
+
+const isValid = (square) => {
+    if(square.innerText === 'X' || square.innerText === 'O'){
+        return false;
+    } else {
+    return true;
     }
 }
-    
 
-function setTurn() {
-    if(myGame.turn == true) {
-        myGame.turn = !myGame.turn
-    } else if(myGame.turn == false) {
-        myGame.turn = !myGame.turn
-    }
-    
+const updateBoard = (index) => {
+    gameController.gameBoard[index] = gameController.currentPlayer;
 }
 
-function render() {
-    console.log(myGame.gameBoard)
-    for(let i = 0; i < myGame.gameBoard.length; i++){
-        if(myGame.gameBoard[i] == undefined) {
-           myGame.gameBoard[i] = ''
-        } else if(myGame.gameBoard.length <= 9) {
-                squares[i].innerText = myGame.gameBoard[i]
+
+function handleResultValidation() {
+    let roundWon = false;
+    for(let i = 0; i <= 7; i++) {
+        const winningConditions = winningCombinations[i]
+        const a = gameController.gameBoard[winningConditions[0]];
+        const b = gameController.gameBoard[winningConditions[1]];
+        const c = gameController.gameBoard[winningConditions[2]];
+        if( a === '' || b === '' || c === ''){
+            continue;
+        }
+        if (a === b && b === c){
+            roundWon = true;
+            break;
         }
     }
-   
+    if(roundWon) {
+        weHaveAWinner(gameController.currentPlayer === 'X' ? 'playerX' : 'playerO');
+        gameController.isGameActive = false;
+        return;
+    }
+    if(!gameController.gameBoard.includes(''))
+    weHaveAWinner(TIE);
 }
 
-function winningCombination(){ 
-    [
-    0, 1, 2,
-    0, 3, 6,
-    0, 1, 8,
-    2, 4, 6,
-    3, 4, 5,
-    6, 7, 8,
-    6, 4, 2,
-]
+const weHaveAWinner = (value) => {
+
+    const playerX = `${gameController.playerOne.name} has won the game`
+    const playerO = `${gameController.playerTwo.name} has won the game!`;
+    const TIE = 'TIE'
+    switch (value) {
+        case 'playerO':
+            msg.innerHTML = `${playerX}`;
+            break;
+        case 'playerX':
+            msg.innerHTML = `${playerO}`;
+            break;
+        case TIE:
+            msg.innerText = 'Tie'
+    }
+    return {playerX, playerO, TIE}
 }
 
-function checkStatus(){
-    if(myGame.gameBoard[0] == 'X' && myGame.gameBoard[1] == 'X' && myGame.gameBoard[2] == 'X') {
-        setTimeout(() => {
-            myGame.setWinner()
-        }, 100)
-        msg.innerText = `${myGame.playerOne.name} wins`
-    } else if(myGame.gameBoard[0] == 'O' && myGame.gameBoard[1] == 'O' && myGame.gameBoard[2] == 'O') {
-        setTimeout(() => {
-            myGame.setWinner()
-        }, 100)
-        msg.innerText = `${myGame.playerTwo.name} wins`
-    } else if(myGame.gameBoard[0] == 'O' && myGame.gameBoard[3] == 'O' && myGame.gameBoard[6] == 'O') {
-        setTimeout(() => {
-            myGame.setWinner()
-        }, 100)
-        msg.innerText = `${myGame.playerTwo.name} wins`
-    } else if(myGame.gameBoard[0] == 'X' && myGame.gameBoard[3] == 'X' && myGame.gameBoard[6] == 'X'){
-        setTimeout(() => {
-            myGame.setWinner()
-        }, 100)
-        msg.innerText = `${myGame.playerOne.name} wins`
-    } else if(myGame.gameBoard[0] == 'X' && myGame.gameBoard[4] == 'X' && myGame.gameBoard[8] == 'X') {
-        setTimeout(() => {
-            myGame.setWinner()
-        }, 100)
-        msg.innerText = `${myGame.playerOne.name} wins`
-    } else if(myGame.gameBoard[0] == 'O' && myGame.gameBoard[4] == 'O' && myGame.gameBoard[8] == 'O') {
-        setTimeout(() => {
-            myGame.setWinner()
-        }, 100)
-        msg.innerText = `${myGame.playerTwo.name} wins`
-    } else if(myGame.gameBoard[3] == 'O' && myGame.gameBoard[4] == 'O' && myGame.gameBoard[5] == 'O') {
-        setTimeout(() => {
-            myGame.setWinner()
-        }, 100)
-        msg.innerText = `${myGame.playerTwo.name} wins`
-    } else if(myGame.gameBoard[3] == 'X' && myGame.gameBoard[4] == 'X' && myGame.gameBoard[5] == 'X') {
-        setTimeout(() => {
-            myGame.setWinner()
-        }, 100)
-        msg.innerText = `${myGame.playerOne.name} wins`
-    } else if(myGame.gameBoard[6] == 'X' && myGame.gameBoard[7] == 'X' && myGame.gameBoard[8] == 'X') {
-        setTimeout(() => {
-            myGame.setWinner()
-        }, 100)
-        msg.innerText = `${myGame.playerOne.name} wins`
-    } else if(myGame.gameBoard[6] == 'O' && myGame.gameBoard[7] == 'O' && myGame.gameBoard[8] == 'O') {
-        setTimeout(() => {
-            myGame.setWinner()
-        }, 100)
-        msg.innerText = `${myGame.playerTwo.name} wins`
-    } else if(myGame.gameBoard[1] == 'O' && myGame.gameBoard[4] == 'O' && myGame.gameBoard[7] == 'O') {
-        setTimeout(() => {
-            myGame.setWinner()
-        }, 100)
-        msg.innerText = `${myGame.playerTwo.name} wins`
-    } else if(myGame.gameBoard[1] == 'X' && myGame.gameBoard[4] == 'X' && myGame.gameBoard[7] == 'X') {
-        setTimeout(() => {
-            myGame.setWinner()
-        }, 100)
-        msg.innerText = `${myGame.playerOne.name} wins`
-    } else if(myGame.gameBoard[2] == 'X' && myGame.gameBoard[5] == 'X' && myGame.gameBoard[9] == 'X') {
-        setTimeout(() => {
-            myGame.setWinner()
-        }, 100)
-        msg.innerText = `${myGame.playerOne.name} wins`
-    } else if(myGame.gameBoard[2] == 'O' && myGame.gameBoard[5] == 'O' && myGame.gameBoard[9] == 'O') {
-        setTimeout(() => {
-            myGame.setWinner()
-        }, 100)
-        msg.innerText = `${myGame.playerTwo.name} wins`
-    } else if(myGame.gameBoard[2] == 'O' && myGame.gameBoard[4] == 'O' && myGame.gameBoard[6] == 'O') {
-        setTimeout(() => {
-            myGame.setWinner()
-        }, 100)
-        msg.innerText = `${myGame.playerTwo.name} wins`
-    } else if(myGame.gameBoard[2] == 'X' && myGame.gameBoard[4] == 'X' && myGame.gameBoard[6] == 'X') {
-        setTimeout(() => {
-            myGame.setWinner()
-        }, 100)
-        msg.innerText = `${myGame.playerOne.name} wins`
-    } 
-}
-
-
-function init(){
-    if(myGame.winner === true){
-        if(myGame.winner)
-        msg.innerText = `${myGame.pl}`;
+function changePlayer(){
+    gameController.currentPlayer = gameController.currentPlayer === 'X' ? 'O' : 'X';
+    if(gameController.isGameActive){
+        if(gameController.currentPlayer === 'X'){
+            msg.innerText = `${gameController.playerOne.name}'s turn`
+        } else {
+            msg.innerText = msg.innerText = `${gameController.playerTwo.name}'s turn`
+        }
     } else {
-        myGame.setPlayersName();
-        msg.innerText = `${myGame.playerOne.name} turn`
-        selectedSquares();
+       handleResultValidation();
     }
 }
 
-init();
+const userAction = (square, index) => {
+    if(isValid(square) && gameController.isGameActive){
+        square.innerText = gameController.currentPlayer;
+        square.innerText = `${gameController.currentPlayer}`
+        updateBoard(index)
+        handleResultValidation();
+        changePlayer();
+    }
+}
+
+function initGame(){
+    if(gameController.isGameActive){
+        squares.forEach((square, index) => {
+            square.addEventListener('click', () => {
+                userAction(square, index)
+            });
+    });
+    } else {
+        return 
+    }
+}
+
+
+ const resetGame = () => {
+    gameController.gameBoard = ["", "", "", "", "", "", "", "", ""] 
+    gameController.isGameActive = true;
+    if(gameController.currentPlayer === 'O') {
+        changePlayer();
+    } else {
+        msg.innerText = `${gameController.playerOne.name}'s turn`
+    }
+    squares.forEach(square => {
+        square.innerText = ''
+    })
+ }

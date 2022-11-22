@@ -8,7 +8,7 @@
 body {
     font-family: 'Raleway', sans-serif;
 }
-.container-main {
+.jumbotron {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -18,11 +18,13 @@ body {
 
 }
 .title {
-    font-size: 1rem;
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 25px;
 }
 
 
-.square {
+.space {
     border: 1px solid black;
     width: 8em;
     height: 8em;
@@ -32,7 +34,7 @@ body {
 
 }
 
-.row {
+.fila {
     display: flex;
     flex-direction: column;
 
@@ -45,10 +47,25 @@ body {
 
 }
 
-.square:hover{
+.space:hover{
     background-color: rgb(209, 199, 199);
 }
 
 .red{
     color: red;
+}
+
+
+.button-area {
+    margin: 25px;
+    margin-top: 0;
+    margin-left: 0;
+}
+
+.name-input{
+    padding: 6px;
+}
+
+.separate-names {
+    padding-bottom: 12px;
 }
