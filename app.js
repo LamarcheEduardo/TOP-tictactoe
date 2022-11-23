@@ -69,14 +69,16 @@ function handleResultValidation() {
         return;
     }
     if(!gameController.gameBoard.includes(''))
-    weHaveAWinner(TIE);
+    gameController.isGameActive = false;
+    weHaveAWinner('tie');
 }
 
 const weHaveAWinner = (value) => {
 
     const playerX = `${gameController.playerOne.name} has won the game`
     const playerO = `${gameController.playerTwo.name} has won the game!`;
-    const TIE = 'TIE'
+    const tie = 'TIE'
+
     switch (value) {
         case 'playerO':
             msg.innerHTML = `${playerX}`;
@@ -84,10 +86,10 @@ const weHaveAWinner = (value) => {
         case 'playerX':
             msg.innerHTML = `${playerO}`;
             break;
-        case TIE:
+        case 'tie':
             msg.innerText = 'Tie'
     }
-    return {playerX, playerO, TIE}
+    return {playerX, playerO, tie}
 }
 
 function changePlayer(){
@@ -96,6 +98,7 @@ function changePlayer(){
         if(gameController.currentPlayer === 'X'){
             msg.innerText = `${gameController.playerOne.name}'s turn`
         } else {
+            handleResultValidation();
             msg.innerText = msg.innerText = `${gameController.playerTwo.name}'s turn`
         }
     } else {
@@ -131,6 +134,8 @@ function initGame(){
     gameController.isGameActive = true;
     if(gameController.currentPlayer === 'O') {
         changePlayer();
+    } else if(gameController.playerOne.name === ''){
+       
     } else {
         msg.innerText = `${gameController.playerOne.name}'s turn`
     }

@@ -8,6 +8,7 @@
 body {
     font-family: 'Raleway', sans-serif;
 }
+
 .jumbotron {
     display: flex;
     flex-direction: column;
@@ -15,22 +16,27 @@ body {
     align-items: center;
     width: 100vw;
     height: 100vh;
+    background-color: #0f172a;
+
 
 }
 .title {
     font-size: 3rem;
     font-weight: 700;
     margin-bottom: 25px;
+    color: #86efac
+
 }
 
 
 .space {
-    border: 1px solid black;
+    border: 0.2px solid whitesmoke;
     width: 8em;
     height: 8em;
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: white;
 
 }
 
@@ -42,7 +48,7 @@ body {
 
 .gameBoard {
     display: flex;
-    border: 2px solid black;
+    border: 3px solid #86efac;
 
 
 }
@@ -69,3 +75,8 @@ body {
 .separate-names {
     padding-bottom: 12px;
 }
+
+#msg {
+    color: white;
+}
+
