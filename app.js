@@ -108,7 +108,6 @@ function changePlayer(){
 
 const userAction = (square, index) => {
     if(isValid(square) && gameController.isGameActive){
-        square.innerText = gameController.currentPlayer;
         square.innerText = `${gameController.currentPlayer}`
         updateBoard(index)
         handleResultValidation();
